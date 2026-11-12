@@ -13,7 +13,7 @@ class TelnyxService:
         if not api_key:
             raise ValueError("Missing TELNYX_API_KEY environment variable")
 
-        telnyx.api_key = api_key
+        self.client = telnyx.Telnyx(api_key=api_key)
         self.from_number = os.getenv("TELNYX_PHONE_NUMBER")
         if not self.from_number:
             raise ValueError("Missing TELNYX_PHONE_NUMBER environment variable")
@@ -23,7 +23,7 @@ class TelnyxService:
     async def send_sms(self, to: str, message: str) -> bool:
         """Send SMS message via Telnyx"""
         try:
-            response = telnyx.Message.create(
+            response = self.client.messages.send(
                 from_=self.from_number, to=to, text=message
             )
 
